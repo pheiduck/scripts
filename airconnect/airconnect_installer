@@ -94,19 +94,6 @@ if [ -d "${bindir}" ]; then
 else
   printf "${GREEN}Installing AirConnect...${NC}\n"
 
-  # For Ubuntu 24.04+, skip libssl1.1 as it's not required
-  if ! grep -q "24.04" /etc/os-release; then
-    if dpkg-query -W -f='${Status}' libssl1.1 2>/dev/null | grep -q "unknown ok not-installed"; then
-      printf "${YELLOW}Installing libssl1.1 dependency...${NC}\n"
-      if ! apt-get install -y libssl1.1; then
-        printf "${RED}ERROR: ${NC}Failed to install libssl1.1. Exiting.\n"
-        exit 1
-      fi
-    fi
-  else
-    printf "${YELLOW}Skipping libssl1.1 installation for Ubuntu 24.04+...${NC}\n"
-  fi
-
   # Create necessary directories and download binaries
   if [ "$USE_OUTPUT_DIR" = true ]; then
     printf "${YELLOW}Downloading and installing AirConnect binaries...${NC}\n"
