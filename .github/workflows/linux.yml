@@ -8,23 +8,9 @@ jobs:
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@main
-      - name: Prepare APT cache dir
-        run: |
-          sudo install -d -m 0755 -o _apt -g root \
-            "$RUNNER_TEMP/apt-cache/archives/partial" \
-            "$RUNNER_TEMP/apt-cache/lists/partial"
-      - name: Cache apt packages
-        uses: actions/cache@main
-        with:
-          path: |
-            ${{ runner.temp }}/apt-cache/archives
-          key: ${{ runner.os }}-apt-${{ matrix.os }}-${{ hashFiles('**/airconnect/airconnect_installer') }}
-          restore-keys: |
-            ${{ runner.os }}-apt-${{ matrix.os }}-
       - name: Install dependencies
         run: |
-          APT_OPTS='-o Dir::Cache::Archives='"$RUNNER_TEMP/apt-cache/archives"' -o Dir::Cache::Lists='"$RUNNER_TEMP/apt-cache/lists"
-          sudo apt-get update $APT_OPTS && sudo apt-get install -y zsh $APT_OPTS
+          sudo apt-get update && sudo apt-get install -y zsh
 
       - name: Testing Shell script
         run: |
