@@ -22,10 +22,8 @@ jobs:
             ${{ runner.os }}-apt-${{ matrix.os }}-
       - name: Install dependencies
         run: |
-          sudo apt-get update \
-            -o Dir::Cache::Archives="$RUNNER_TEMP/apt-cache/archives" \
-            -o Dir::Cache::Lists="$RUNNER_TEMP/apt-cache/lists"
-          sudo apt-get install -y zsh
+          APT_OPTS='-o Dir::Cache::Archives='"$RUNNER_TEMP/apt-cache/archives"' -o Dir::Cache::Lists='"$RUNNER_TEMP/apt-cache/lists"
+          sudo apt-get update $APT_OPTS && sudo apt-get install -y zsh $APT_OPTS
 
       - name: Testing Shell script
         run: |
