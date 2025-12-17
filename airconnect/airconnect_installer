@@ -23,20 +23,6 @@ if [ "$(uname -s)" != "Linux" ]; then
   exit 1
 fi
 
-# Check for curl version compatibility with --remove-on-error (7.83.0+)
-if curl --version | head -n 1 | awk '{print $2}' | awk -F. '{if ($1 > 7 || ($1 == 7 && $2 >= 83)) exit 0; else exit 1}'; then
-  CURL_FLAGS="--remove-on-error"
-else
-  CURL_FLAGS=""
-fi
-
-# Check for curl version compatibility with --output-dir (7.73.0+)
-if curl --version | head -n 1 | awk '{print $2}' | awk -F. '{if ($1 > 7 || ($1 == 7 && $2 >= 73)) exit 0; else exit 1}'; then
-  USE_OUTPUT_DIR=true
-else
-  USE_OUTPUT_DIR=false
-fi
-
 # Check if AirConnect is already installed
 if [ -d "${bindir}" ]; then
   printf "${GREEN}Updating AirConnect...${NC}\n"
@@ -53,7 +39,7 @@ if [ -d "${bindir}" ]; then
 
   # Download and update the AirConnect binaries
   printf "${YELLOW}Downloading latest AirConnect binaries...${NC}\n"
-  if ! curl ${CURL_FLAGS} -s --compressed https://api.github.com/repos/philippe44/AirConnect/releases/latest | grep browser_download_url | cut -d '"' -f 4 | xargs curl ${CURL_FLAGS} --compressed --progress-bar -Lo airconnect.zip; then
+  if ! curl -s https://api.github.com/repos/philippe44/AirConnect/releases/latest | grep browser_download_url | cut -d '"' -f 4 | xargs curl --remove-on-error --compressed --progress-bar -Lo airconnect.zip; then
     printf "${RED}ERROR: ${NC}Failed to download AirConnect binaries. Exiting.\n"
     exit 1
   fi
@@ -95,39 +81,11 @@ else
   printf "${GREEN}Installing AirConnect...${NC}\n"
 
   # Create necessary directories and download binaries
-  if [ "$USE_OUTPUT_DIR" = true ]; then
     printf "${YELLOW}Downloading and installing AirConnect binaries...${NC}\n"
-    curl ${CURL_FLAGS} --compressed --progress-bar https://raw.githubusercontent.com/philippe44/AirConnect/c3dfcdb/bin/airupnp-linux-$(uname -m) --output-dir "${bindir}" --create-dirs -o airupnp-linux || {
+    curl --remove-on-error --compressed --progress-bar https://raw.githubusercontent.com/philippe44/AirConnect/c3dfcdb/bin/airupnp-linux-$(uname -m) --output-dir "${bindir}" --create-dirs -o airupnp-linux || {
       printf "${RED}ERROR: ${NC}Failed to download AirConnect binaries. Exiting.\n"
       exit 1
     }
-  else
-    printf "${YELLOW}Downloading and installing AirConnect binaries...${NC}\n"
-    mkdir -p "${bindir}" || {
-      printf "${RED}ERROR: ${NC}Failed to create directory ${bindir}. Exiting.\n"
-      exit 1
-    }
-
-    pushd "${bindir}" || {
-      printf "${RED}ERROR: ${NC}Failed to change directory to ${bindir}. Exiting.\n"
-      exit 1
-    }
-
-    curl ${CURL_FLAGS} --compressed --progress-bar https://raw.githubusercontent.com/philippe44/AirConnect/c3dfcdb/bin/airupnp-linux-$(uname -m) -o airupnp-linux || {
-      printf "${RED}ERROR: ${NC}Failed to download AirConnect binaries. Exiting.\n"
-      exit 1
-    }
-
-    chmod 755 airupnp-linux || {
-      printf "${RED}ERROR: ${NC}Failed to set permissions on airupnp-linux. Exiting.\n"
-      exit 1
-    }
-
-    popd || {
-      printf "${RED}ERROR: ${NC}Failed to return to the previous directory. Exiting.\n"
-      exit 1
-    }
-  fi
 
   # Download the systemd service file and set it up
   pushd "${sysdir}" || {
@@ -136,7 +94,7 @@ else
   }
 
   printf "${YELLOW}Downloading AirConnect systemd service file...${NC}\n"
-  curl ${CURL_FLAGS} --compressed --progress-bar -LO https://raw.githubusercontent.com/pheiduck/rpi_configs/main/airconnect/airupnp.service || {
+  curl --remove-on-error --compressed --progress-bar -LO https://raw.githubusercontent.com/pheiduck/rpi_configs/main/airconnect/airupnp.service || {
     printf "${RED}ERROR: ${NC}Failed to download systemd service file. Exiting.\n"
     exit 1
   }
