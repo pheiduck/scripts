@@ -11,6 +11,8 @@ jobs:
       - name: Prepare APT cache dir
         run: |
           mkdir -p "$RUNNER_TEMP/apt-cache"/{archives,lists}
+          sudo chown -R _apt:root "$RUNNER_TEMP/apt-cache"
+          sudo chmod -R 755 "$RUNNER_TEMP/apt-cache"
       - name: Cache apt packages
         uses: actions/cache@main
         with:
