@@ -12,6 +12,6 @@ jobs:
       - uses: actions/checkout@main
         with:
           fetch-depth: 0
-      - uses: FantasticFiasco/action-update-license-year@master
+      - uses: FantasticFiasco/action-update-license-year@main
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
