@@ -1,0 +1,17 @@
+### File: /etc/systemd/system/btrfs-fix-default.service
+
+[Unit]
+Description=Fix Btrfs default subvolume after Timeshift restore
+DefaultDependencies=no
+After=local-fs.target
+Before=sysinit.target
+
+[Service]
+Type=oneshot
+ExecStart=/usr/local/bin/btrfs-fix-default.sh
+RemainAfterExit=yes
+StandardOutput=journal
+StandardError=journal
+
+[Install]
+WantedBy=sysinit.target
