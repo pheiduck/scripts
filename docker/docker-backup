@@ -37,9 +37,16 @@ done
 
 # Nur die drei neuesten Backups behalten
 backup_dir="/home/$username"
-ls -1t "${backup_dir}"/docker-backup-*.tar.zst 2>/dev/null | tail -n +4 | while read -r file; do
-    rm -- "$file"
-    echo "Lösche altes Backup: $file"
-done
+
+mapfile -t backups < <(ls -1t "${backup_dir}"/docker-backup-*.tar.zst 2>/dev/null)
+
+if (( ${#backups[@]} > 3 )); then
+    for file in "${backups[@]:3}"; do
+        echo "Lösche altes Backup: $file"
+        rm -- "$file"
+    done
+else
+    echo "Nur ${#backups[@]} Backup(s) vorhanden – nichts zu löschen."
+fi
 
 echo "${YELLOW}Backup abgeschlossen.${NC}"
