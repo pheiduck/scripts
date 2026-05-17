@@ -38,12 +38,14 @@ done
 # Nur die drei neuesten Backups behalten
 backup_dir="/home/$username"
 
-mapfile -t backups < <(ls -1t "${backup_dir}"/docker-backup-*.tar.zst 2>/dev/null)
+setopt NULL_GLOB
+
+backups=("${backup_dir}"/docker-backup-*.tar.zst(om))
 
 if (( ${#backups[@]} > 3 )); then
     for file in "${backups[@]:3}"; do
         echo "Lösche altes Backup: $file"
-        rm -- "$file"
+        rm -f -- "$file"
     done
 else
     echo "Nur ${#backups[@]} Backup(s) vorhanden – nichts zu löschen."
