@@ -7,7 +7,6 @@ NC='\033[0m'
 # Backup-Konfiguration
 export ZSTD_CLEVEL=9
 export ZSTD_NBTHREADS=2
-username=$(whoami)
 backupDate=$(date '+%d%m%y')
 
 # Docker-Container stoppen
@@ -21,7 +20,7 @@ done
 sleep 15
 
 # Backup erstellen
-pushd /home/$username
+pushd "$HOME"
 sudo tar --create --sparse --zstd --file docker-backup-$backupDate.tar.zst --checkpoint=.100 docker
 popd
 
@@ -36,11 +35,11 @@ do
 done
 
 # Nur die drei neuesten Backups behalten
-backup_dir="/home/$username"
+backup_dir="$HOME"
 
 setopt NULL_GLOB
 
-backups=("${backup_dir}"/docker-backup-*.tar.zst(om))
+backups=("${backup_dir}"/docker-backup-*.tar.zst(Om))
 
 if (( ${#backups[@]} > 3 )); then
     for file in "${backups[@]:3}"; do
