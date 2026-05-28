@@ -39,7 +39,7 @@ backup_dir="$HOME"
 
 setopt NULL_GLOB
 
-backups=("${backup_dir}"/docker-backup-*.tar.zst(Om))
+backups=("${backup_dir}"/docker-backup-*.tar.zst(om))
 
 if (( ${#backups[@]} > 3 )); then
     for file in "${backups[@]:3}"; do
