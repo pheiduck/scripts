@@ -48,7 +48,7 @@ for f in "$backup_dir"/docker-backup-*.tar.zst(N); do
     dd="${datepart[1,2]}"
     mm="${datepart[3,4]}"
     yy="${datepart[5,6]}"
-    backups+=("20${yy}${mm}${dd} $f")
+    backups+=("${yyyy}${mm}${dd} $f")
 done
 
 backups=(${(f)"$(print -l "${backups[@]}" | sort -r | awk '{print $2}')"})
