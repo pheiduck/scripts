@@ -37,9 +37,21 @@ done
 # Nur die drei neuesten Backups behalten
 backup_dir="$HOME"
 
-setopt NULL_GLOB
+typeset -a backups
+backups=()
 
-backups=("${backup_dir}"/docker-backup-*.tar.zst(On))
+for f in "$backup_dir"/docker-backup-*.tar.zst(N); do
+    [[ -f "$f" ]] || continue
+    base="${f:t}"
+    datepart="${base#docker-backup-}"
+    datepart="${datepart%.tar.zst}"
+    dd="${datepart[1,2]}"
+    mm="${datepart[3,4]}"
+    yy="${datepart[5,6]}"
+    backups+=("20${yy}${mm}${dd} $f")
+done
+
+backups=(${(f)"$(print -l "${backups[@]}" | sort -r | awk '{print $2}')"})
 
 if (( ${#backups[@]} > 3 )); then
     for file in "${backups[@]:3}"; do
@@ -50,4 +62,4 @@ else
     echo "Nur ${#backups[@]} Backup(s) vorhanden – nichts zu löschen."
 fi
 
-echo "${YELLOW}Backup abgeschlossen.${NC}"
+print "${YELLOW}Backup abgeschlossen.${NC}"
