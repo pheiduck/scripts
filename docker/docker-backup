@@ -21,7 +21,7 @@ sleep 15
 
 # Backup erstellen
 pushd "$HOME"
-sudo tar --create --sparse --zstd --file docker-backup-$backupDate.tar.zst --checkpoint=.100 --directory "$HOME" docker
+sudo tar --create --sparse --zstd --file docker-backup-$backupDate.tar.zst --checkpoint=.100 docker
 popd
 
 sleep 15
