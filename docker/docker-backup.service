@@ -2,7 +2,7 @@
 Description=Docker Backup Service
 
 [Service]
-USER=dietpi
+USER=username
 Environment=HOME=/home/username
 WorkingDirectory=/home/username
 ExecStart=zsh docker-backup
