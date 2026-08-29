@@ -1,0 +1,18 @@
+#!/usr/bin/env bash
+set -e
+
+AUTH_USER="<Token>"
+AUTH_PASS="<Secret>"
+
+WAKE_MAC="${1}"
+WAKE_NET="${2}"
+
+API_HOST="<ip eurer Firewall>"
+API_PATH="api/wol/wol/set"
+API_URL="https://${API_HOST}/${API_PATH}"
+
+curl --silent --insecure --request POST \
+        --user "${AUTH_USER}":"${AUTH_PASS}" \
+        --header "Content-Type: application/json" \
+        --data "{\"wake\":{\"interface\": \"${WAKE_NET}\",\"mac\": \"${WAKE_MAC}\"}}" \
+        "${API_URL}"
