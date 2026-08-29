@@ -7,7 +7,7 @@ AUTH_PASS="<Secret>"
 WAKE_MAC="${1}"
 WAKE_NET="${2}"
 
-API_HOST="<ip eurer Firewall>"
+API_HOST="<ip of firewall>"
 API_PATH="api/wol/wol/set"
 API_URL="https://${API_HOST}/${API_PATH}"
 
